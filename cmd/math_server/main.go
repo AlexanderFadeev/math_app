@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"math_app/app/interface/http_server"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -17,9 +20,21 @@ func main() {
 	if err != nil {
 		handleError(err)
 	}
-	select {}
+
+	waitForOSSignal()
+
+	err = server.Stop()
+	if err != nil {
+		handleError(err)
+	}
 }
 
 func handleError(err error) {
 	fmt.Println(err)
+}
+
+func waitForOSSignal() {
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, syscall.SIGTERM, syscall.SIGINT)
+	<-signalChan
 }
