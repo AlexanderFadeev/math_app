@@ -11,6 +11,7 @@ RUN go mod download
 ENV CGO_ENABLED=0
 
 COPY . .
+RUN go test -cover ./...
 RUN go install ./cmd/math_server
 
 
